@@ -1,0 +1,8 @@
+Cartas de Poker Detectadas
+==============================
+Fecha: 2025-11-11 18:40:14
+Cámaras detectadas: [0, 1]
+
+1. 10 de Tréboles
+2. 5 de Tréboles
+3. J de Corazones
