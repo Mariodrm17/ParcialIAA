@@ -1,0 +1,420 @@
+{
+    "templates": [
+        {
+            "filename": "A_C_20251117_151757.jpg",
+            "card_name": "A_C",
+            "full_name": "A de Treboles",
+            "number": "A",
+            "suit": "C",
+            "timestamp": "20251117_151757"
+        },
+        {
+            "filename": "2_C_20251117_151839.jpg",
+            "card_name": "2_C",
+            "full_name": "2 de Treboles",
+            "number": "2",
+            "suit": "C",
+            "timestamp": "20251117_151839"
+        },
+        {
+            "filename": "3_C_20251117_151905.jpg",
+            "card_name": "3_C",
+            "full_name": "3 de Treboles",
+            "number": "3",
+            "suit": "C",
+            "timestamp": "20251117_151905"
+        },
+        {
+            "filename": "5_C_20251117_151933.jpg",
+            "card_name": "5_C",
+            "full_name": "5 de Treboles",
+            "number": "5",
+            "suit": "C",
+            "timestamp": "20251117_151933"
+        },
+        {
+            "filename": "4_C_20251117_152000.jpg",
+            "card_name": "4_C",
+            "full_name": "4 de Treboles",
+            "number": "4",
+            "suit": "C",
+            "timestamp": "20251117_152000"
+        },
+        {
+            "filename": "7_C_20251117_152023.jpg",
+            "card_name": "7_C",
+            "full_name": "7 de Treboles",
+            "number": "7",
+            "suit": "C",
+            "timestamp": "20251117_152023"
+        },
+        {
+            "filename": "6_C_20251117_152051.jpg",
+            "card_name": "6_C",
+            "full_name": "6 de Treboles",
+            "number": "6",
+            "suit": "C",
+            "timestamp": "20251117_152051"
+        },
+        {
+            "filename": "8_C_20251117_152124.jpg",
+            "card_name": "8_C",
+            "full_name": "8 de Treboles",
+            "number": "8",
+            "suit": "C",
+            "timestamp": "20251117_152124"
+        },
+        {
+            "filename": "9_C_20251117_152154.jpg",
+            "card_name": "9_C",
+            "full_name": "9 de Treboles",
+            "number": "9",
+            "suit": "C",
+            "timestamp": "20251117_152154"
+        },
+        {
+            "filename": "10_C_20251117_152222.jpg",
+            "card_name": "10_C",
+            "full_name": "10 de Treboles",
+            "number": "10",
+            "suit": "C",
+            "timestamp": "20251117_152222"
+        },
+        {
+            "filename": "J_C_20251117_152556.jpg",
+            "card_name": "J_C",
+            "full_name": "J de Treboles",
+            "number": "J",
+            "suit": "C",
+            "timestamp": "20251117_152556"
+        },
+        {
+            "filename": "Q_C_20251117_152620.jpg",
+            "card_name": "Q_C",
+            "full_name": "Q de Treboles",
+            "number": "Q",
+            "suit": "C",
+            "timestamp": "20251117_152620"
+        },
+        {
+            "filename": "K_C_20251117_152635.jpg",
+            "card_name": "K_C",
+            "full_name": "K de Treboles",
+            "number": "K",
+            "suit": "C",
+            "timestamp": "20251117_152635"
+        },
+        {
+            "filename": "A_D_20251117_153908.jpg",
+            "card_name": "A_D",
+            "full_name": "A de Diamantes",
+            "number": "A",
+            "suit": "D",
+            "timestamp": "20251117_153908"
+        },
+        {
+            "filename": "2_D_20251117_153922.jpg",
+            "card_name": "2_D",
+            "full_name": "2 de Diamantes",
+            "number": "2",
+            "suit": "D",
+            "timestamp": "20251117_153922"
+        },
+        {
+            "filename": "3_D_20251117_154105.jpg",
+            "card_name": "3_D",
+            "full_name": "3 de Diamantes",
+            "number": "3",
+            "suit": "D",
+            "timestamp": "20251117_154105"
+        },
+        {
+            "filename": "5_D_20251117_154120.jpg",
+            "card_name": "5_D",
+            "full_name": "5 de Diamantes",
+            "number": "5",
+            "suit": "D",
+            "timestamp": "20251117_154120"
+        },
+        {
+            "filename": "5_D_20251117_154138.jpg",
+            "card_name": "5_D",
+            "full_name": "5 de Diamantes",
+            "number": "5",
+            "suit": "D",
+            "timestamp": "20251117_154138"
+        },
+        {
+            "filename": "6_D_20251117_154148.jpg",
+            "card_name": "6_D",
+            "full_name": "6 de Diamantes",
+            "number": "6",
+            "suit": "D",
+            "timestamp": "20251117_154148"
+        },
+        {
+            "filename": "7_D_20251117_154201.jpg",
+            "card_name": "7_D",
+            "full_name": "7 de Diamantes",
+            "number": "7",
+            "suit": "D",
+            "timestamp": "20251117_154201"
+        },
+        {
+            "filename": "8_D_20251117_154214.jpg",
+            "card_name": "8_D",
+            "full_name": "8 de Diamantes",
+            "number": "8",
+            "suit": "D",
+            "timestamp": "20251117_154214"
+        },
+        {
+            "filename": "9_D_20251117_154221.jpg",
+            "card_name": "9_D",
+            "full_name": "9 de Diamantes",
+            "number": "9",
+            "suit": "D",
+            "timestamp": "20251117_154221"
+        },
+        {
+            "filename": "10_D_20251117_154234.jpg",
+            "card_name": "10_D",
+            "full_name": "10 de Diamantes",
+            "number": "10",
+            "suit": "D",
+            "timestamp": "20251117_154234"
+        },
+        {
+            "filename": "J_D_20251117_154246.jpg",
+            "card_name": "J_D",
+            "full_name": "J de Diamantes",
+            "number": "J",
+            "suit": "D",
+            "timestamp": "20251117_154246"
+        },
+        {
+            "filename": "Q_D_20251117_154307.jpg",
+            "card_name": "Q_D",
+            "full_name": "Q de Diamantes",
+            "number": "Q",
+            "suit": "D",
+            "timestamp": "20251117_154307"
+        },
+        {
+            "filename": "K_D_20251117_154317.jpg",
+            "card_name": "K_D",
+            "full_name": "K de Diamantes",
+            "number": "K",
+            "suit": "D",
+            "timestamp": "20251117_154317"
+        },
+        {
+            "filename": "A_S_20251117_154350.jpg",
+            "card_name": "A_S",
+            "full_name": "A de Picas",
+            "number": "A",
+            "suit": "S",
+            "timestamp": "20251117_154350"
+        },
+        {
+            "filename": "2_S_20251117_154401.jpg",
+            "card_name": "2_S",
+            "full_name": "2 de Picas",
+            "number": "2",
+            "suit": "S",
+            "timestamp": "20251117_154401"
+        },
+        {
+            "filename": "3_S_20251117_154413.jpg",
+            "card_name": "3_S",
+            "full_name": "3 de Picas",
+            "number": "3",
+            "suit": "S",
+            "timestamp": "20251117_154413"
+        },
+        {
+            "filename": "4_S_20251117_154423.jpg",
+            "card_name": "4_S",
+            "full_name": "4 de Picas",
+            "number": "4",
+            "suit": "S",
+            "timestamp": "20251117_154423"
+        },
+        {
+            "filename": "5_S_20251117_154432.jpg",
+            "card_name": "5_S",
+            "full_name": "5 de Picas",
+            "number": "5",
+            "suit": "S",
+            "timestamp": "20251117_154432"
+        },
+        {
+            "filename": "6_S_20251117_154439.jpg",
+            "card_name": "6_S",
+            "full_name": "6 de Picas",
+            "number": "6",
+            "suit": "S",
+            "timestamp": "20251117_154439"
+        },
+        {
+            "filename": "7_S_20251117_154447.jpg",
+            "card_name": "7_S",
+            "full_name": "7 de Picas",
+            "number": "7",
+            "suit": "S",
+            "timestamp": "20251117_154447"
+        },
+        {
+            "filename": "8_S_20251117_154453.jpg",
+            "card_name": "8_S",
+            "full_name": "8 de Picas",
+            "number": "8",
+            "suit": "S",
+            "timestamp": "20251117_154453"
+        },
+        {
+            "filename": "8_S_20251117_154503.jpg",
+            "card_name": "8_S",
+            "full_name": "8 de Picas",
+            "number": "8",
+            "suit": "S",
+            "timestamp": "20251117_154503"
+        },
+        {
+            "filename": "10_S_20251117_154509.jpg",
+            "card_name": "10_S",
+            "full_name": "10 de Picas",
+            "number": "10",
+            "suit": "S",
+            "timestamp": "20251117_154509"
+        },
+        {
+            "filename": "J_S_20251117_154532.jpg",
+            "card_name": "J_S",
+            "full_name": "J de Picas",
+            "number": "J",
+            "suit": "S",
+            "timestamp": "20251117_154532"
+        },
+        {
+            "filename": "Q_S_20251117_154546.jpg",
+            "card_name": "Q_S",
+            "full_name": "Q de Picas",
+            "number": "Q",
+            "suit": "S",
+            "timestamp": "20251117_154546"
+        },
+        {
+            "filename": "K_S_20251117_154556.jpg",
+            "card_name": "K_S",
+            "full_name": "K de Picas",
+            "number": "K",
+            "suit": "S",
+            "timestamp": "20251117_154556"
+        },
+        {
+            "filename": "A_H_20251117_154611.jpg",
+            "card_name": "A_H",
+            "full_name": "A de Corazones",
+            "number": "A",
+            "suit": "H",
+            "timestamp": "20251117_154611"
+        },
+        {
+            "filename": "2_H_20251117_154618.jpg",
+            "card_name": "2_H",
+            "full_name": "2 de Corazones",
+            "number": "2",
+            "suit": "H",
+            "timestamp": "20251117_154618"
+        },
+        {
+            "filename": "3_H_20251117_154625.jpg",
+            "card_name": "3_H",
+            "full_name": "3 de Corazones",
+            "number": "3",
+            "suit": "H",
+            "timestamp": "20251117_154625"
+        },
+        {
+            "filename": "4_H_20251117_154645.jpg",
+            "card_name": "4_H",
+            "full_name": "4 de Corazones",
+            "number": "4",
+            "suit": "H",
+            "timestamp": "20251117_154645"
+        },
+        {
+            "filename": "5_H_20251117_154652.jpg",
+            "card_name": "5_H",
+            "full_name": "5 de Corazones",
+            "number": "5",
+            "suit": "H",
+            "timestamp": "20251117_154652"
+        },
+        {
+            "filename": "6_H_20251117_154702.jpg",
+            "card_name": "6_H",
+            "full_name": "6 de Corazones",
+            "number": "6",
+            "suit": "H",
+            "timestamp": "20251117_154702"
+        },
+        {
+            "filename": "7_H_20251117_154710.jpg",
+            "card_name": "7_H",
+            "full_name": "7 de Corazones",
+            "number": "7",
+            "suit": "H",
+            "timestamp": "20251117_154710"
+        },
+        {
+            "filename": "8_H_20251117_154719.jpg",
+            "card_name": "8_H",
+            "full_name": "8 de Corazones",
+            "number": "8",
+            "suit": "H",
+            "timestamp": "20251117_154719"
+        },
+        {
+            "filename": "9_H_20251117_154730.jpg",
+            "card_name": "9_H",
+            "full_name": "9 de Corazones",
+            "number": "9",
+            "suit": "H",
+            "timestamp": "20251117_154730"
+        },
+        {
+            "filename": "10_H_20251117_154737.jpg",
+            "card_name": "10_H",
+            "full_name": "10 de Corazones",
+            "number": "10",
+            "suit": "H",
+            "timestamp": "20251117_154737"
+        },
+        {
+            "filename": "J_H_20251117_154744.jpg",
+            "card_name": "J_H",
+            "full_name": "J de Corazones",
+            "number": "J",
+            "suit": "H",
+            "timestamp": "20251117_154744"
+        },
+        {
+            "filename": "Q_H_20251117_154752.jpg",
+            "card_name": "Q_H",
+            "full_name": "Q de Corazones",
+            "number": "Q",
+            "suit": "H",
+            "timestamp": "20251117_154752"
+        },
+        {
+            "filename": "K_H_20251117_154801.jpg",
+            "card_name": "K_H",
+            "full_name": "K de Corazones",
+            "number": "K",
+            "suit": "H",
+            "timestamp": "20251117_154801"
+        }
+    ]
+}
