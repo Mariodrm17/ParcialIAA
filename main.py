@@ -8,10 +8,10 @@ import time
 import json
 from datetime import datetime
 
-# Importar módulos correctos
+# ✅ IMPORTAR MÓDULOS CORRECTOS
 from camera_manager import IVCamManager
 from fixed_template_matcher import FixedTemplateRecognizer
-from suit_recognizer import SuitRecognizer
+
 
 class CardDetectorWithCalibration:
     """Detector que USA la calibración guardada"""
@@ -95,7 +95,7 @@ class CardDetectorWithCalibration:
                         aspect_ratio = w / h if h > 0 else 0
                         if 0.5 <= aspect_ratio <= 0.9:
                             # Extraer carta con margen
-                            margin = 10
+                            margin = 20
                             x1 = max(0, x - margin)
                             y1 = max(0, y - margin)
                             x2 = min(frame.shape[1], x + w + margin)
@@ -117,20 +117,20 @@ class CardDetectorWithCalibration:
 class PokerCardApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("🃏 Detector de Cartas Poker - CON CALIBRACIÓN")
-        self.root.geometry("1200x800")
+        self.root.title("🃏 Detector de Cartas Poker - Reconocimiento por Esquinas")
+        self.root.geometry("1400x900")
         
-        # Inicializar componentes CORRECTOS
+        # ✅ COMPONENTES CORRECTOS
         self.camera_manager = IVCamManager()
-        self.card_detector = CardDetectorWithCalibration()  # ✅ DETECTOR CORRECTO
-        self.recognizer = FixedTemplateRecognizer()
-        self.suit_recognizer = SuitRecognizer()
+        self.card_detector = CardDetectorWithCalibration()
+        self.recognizer = FixedTemplateRecognizer()  # ✅ El que reconoce esquinas
         
         # Estado
         self.is_running = False
         self.current_frame = None
-        self.detected_cards = []
+        self.detected_cards = set()  # ✅ Usar set para evitar duplicados
         self.last_process_time = 0
+        self.process_interval = 1.0  # Procesar cada 1 segundo
         
         self.create_interface()
         self.scan_cameras()
@@ -139,80 +139,91 @@ class PokerCardApp:
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
     
     def create_interface(self):
-        """Interfaz simplificada"""
+        """Interfaz mejorada"""
         main_frame = ttk.Frame(self.root, padding="10")
         main_frame.pack(fill=tk.BOTH, expand=True)
         
-        # Panel de control
+        # Panel de control superior
         control_frame = ttk.LabelFrame(main_frame, text="🎮 Control del Sistema", padding="10")
         control_frame.pack(fill=tk.X, pady=(0, 10))
         
-        # Selección de cámara
+        # Fila 1: Selección de cámara
         select_frame = ttk.Frame(control_frame)
         select_frame.pack(fill=tk.X, pady=(0, 10))
         
         ttk.Button(select_frame, text="🔍 Buscar Cámaras", 
-                  command=self.scan_cameras).pack(side=tk.LEFT, padx=(0, 10))
+                  command=self.scan_cameras, width=15).pack(side=tk.LEFT, padx=(0, 10))
         
         self.cam_var = tk.StringVar()
         self.cam_combo = ttk.Combobox(select_frame, textvariable=self.cam_var,
-                                     state="readonly", width=40)
-        self.cam_combo.pack(side=tk.LEFT, padx=(0, 10))
+                                     state="readonly", width=50)
+        self.cam_combo.pack(side=tk.LEFT, padx=(0, 10), fill=tk.X, expand=True)
         
-        # Botones de control
+        # Fila 2: Botones de control
         btn_frame = ttk.Frame(control_frame)
         btn_frame.pack(fill=tk.X)
         
-        self.start_btn = ttk.Button(btn_frame, text="▶️ Iniciar Cámara", 
-                                   command=self.start_camera)
-        self.start_btn.pack(side=tk.LEFT, padx=(0, 10))
+        self.start_btn = ttk.Button(btn_frame, text="▶️ Iniciar", 
+                                   command=self.start_camera, width=12)
+        self.start_btn.pack(side=tk.LEFT, padx=(0, 5))
         
         self.stop_btn = ttk.Button(btn_frame, text="⏹️ Detener", 
-                                  command=self.stop_camera, state="disabled")
-        self.stop_btn.pack(side=tk.LEFT, padx=(0, 10))
+                                  command=self.stop_camera, state="disabled", width=12)
+        self.stop_btn.pack(side=tk.LEFT, padx=(0, 5))
         
-        ttk.Button(btn_frame, text="🔄 Recargar Calibración", 
-                  command=self.reload_calibration).pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Button(btn_frame, text="🔄 Recalibrar", 
+                  command=self.reload_calibration, width=12).pack(side=tk.LEFT, padx=(0, 5))
         
         ttk.Button(btn_frame, text="💾 Guardar", 
-                  command=self.save_results).pack(side=tk.LEFT, padx=(0, 10))
+                  command=self.save_results, width=12).pack(side=tk.LEFT, padx=(0, 5))
         
         ttk.Button(btn_frame, text="🧹 Limpiar", 
-                  command=self.clear_detections).pack(side=tk.LEFT)
+                  command=self.clear_detections, width=12).pack(side=tk.LEFT)
         
-        # Contenido principal
+        # Contenido principal - 2 columnas
         content_frame = ttk.Frame(main_frame)
         content_frame.pack(fill=tk.BOTH, expand=True)
         
-        # Vista de cámara
-        cam_frame = ttk.LabelFrame(content_frame, text="📹 Vista en Vivo")
-        cam_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
+        # Columna izquierda: Cámara
+        left_frame = ttk.Frame(content_frame)
+        left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
         
+        cam_label_frame = ttk.LabelFrame(left_frame, text="📹 Vista en Vivo")
+        cam_label_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Estado de calibración
         calibration_status = "✅ CALIBRADO" if self.card_detector.is_calibrated else "❌ NO CALIBRADO"
+        templates_status = f"📦 {len(self.recognizer.corner_templates)} plantillas" if self.recognizer.corner_templates else "❌ SIN PLANTILLAS"
         
-        self.cam_label = ttk.Label(cam_frame, 
+        self.cam_label = ttk.Label(cam_label_frame, 
                                   text=f"🃏 Sistema de Detección de Cartas\n\n"
-                                       f"Estado: {calibration_status}\n\n"
+                                       f"Calibración: {calibration_status}\n"
+                                       f"Plantillas: {templates_status}\n\n"
                                        "📋 PASOS:\n"
                                        "1. Buscar Cámaras\n"
                                        "2. Seleccionar cámara\n"
                                        "3. Iniciar Cámara\n"
-                                       "4. Colocar cartas sobre tapete verde\n\n"
-                                       "⚠️  Si no detecta, ejecuta:\n"
-                                       "   python green_calibrator.py",
+                                       "4. Colocar cartas\n\n"
+                                       "⚠️  Si no funciona:\n"
+                                       "• python green_calibrator.py (tapete)\n"
+                                       "• python template_capture.py (cartas)",
                                   background="black", foreground="white",
-                                  justify=tk.CENTER, font=("Arial", 11))
+                                  justify=tk.CENTER, font=("Courier", 10))
         self.cam_label.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
-        # Panel de resultados
-        results_frame = ttk.LabelFrame(content_frame, text="🎴 Cartas Detectadas")
-        results_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        # Columna derecha: Resultados
+        right_frame = ttk.Frame(content_frame)
+        right_frame.pack(side=tk.RIGHT, fill=tk.BOTH)
         
-        # Lista de cartas
+        results_frame = ttk.LabelFrame(right_frame, text="🎴 Cartas Detectadas")
+        results_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Lista con scrollbar
         list_container = ttk.Frame(results_frame)
         list_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
-        self.cards_list = tk.Listbox(list_container, font=("Arial", 11), height=20)
+        self.cards_list = tk.Listbox(list_container, font=("Courier", 12), 
+                                     width=30, height=25)
         scrollbar = ttk.Scrollbar(list_container, orient="vertical", 
                                  command=self.cards_list.yview)
         self.cards_list.configure(yscrollcommand=scrollbar.set)
@@ -220,7 +231,15 @@ class PokerCardApp:
         self.cards_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
-        # Estado
+        # Estadísticas
+        stats_frame = ttk.LabelFrame(right_frame, text="📊 Estadísticas", padding="5")
+        stats_frame.pack(fill=tk.X, pady=(10, 0))
+        
+        self.stats_var = tk.StringVar(value="Total: 0 cartas")
+        ttk.Label(stats_frame, textvariable=self.stats_var, 
+                 font=("Courier", 10)).pack()
+        
+        # Barra de estado
         status_frame = ttk.Frame(main_frame)
         status_frame.pack(fill=tk.X, pady=(10, 0))
         
@@ -229,56 +248,85 @@ class PokerCardApp:
         
         self.status_var = tk.StringVar(value=calibration_text)
         ttk.Label(status_frame, textvariable=self.status_var, 
-                 foreground=calibration_color).pack(side=tk.LEFT)
+                 foreground=calibration_color, font=("Arial", 9)).pack(side=tk.LEFT)
     
     def scan_cameras(self):
         """Escanea cámaras disponibles"""
         self.status_var.set("🔍 Buscando cámaras...")
+        self.root.update()
+        
         cameras = self.camera_manager.scan_cameras()
         
-        cam_list = [f"{cam['name']} (Índice {cam['index']})" for cam in cameras]
+        cam_list = [f"{cam['name']} - {cam['resolution']}" for cam in cameras]
         self.cam_combo['values'] = cam_list
         
         if cam_list:
             self.cam_combo.current(0)
-            self.status_var.set(f"✅ Encontradas {len(cameras)} cámaras")
+            self.status_var.set(f"✅ {len(cameras)} cámaras encontradas")
         else:
             self.status_var.set("❌ No se encontraron cámaras")
+            messagebox.showwarning("Advertencia", "No se encontraron cámaras disponibles")
     
     def reload_calibration(self):
-        """Recarga la calibración"""
-        success = self.card_detector.load_calibration()
+        """Recarga calibración y plantillas"""
+        # Recargar calibración del tapete
+        calib_success = self.card_detector.load_calibration()
         
-        if success:
-            self.status_var.set("✅ Calibración recargada exitosamente")
-            messagebox.showinfo("Éxito", "Calibración recargada correctamente")
+        # Recargar plantillas
+        template_success = self.recognizer.load_templates()
+        
+        if calib_success and template_success:
+            self.status_var.set("✅ Calibración y plantillas recargadas")
+            messagebox.showinfo("Éxito", 
+                              f"✅ Sistema recargado\n"
+                              f"Calibración: OK\n"
+                              f"Plantillas: {len(self.recognizer.corner_templates)}")
+        elif calib_success:
+            self.status_var.set("⚠️  Calibración OK pero sin plantillas")
+            messagebox.showwarning("Advertencia", 
+                                 "Calibración OK pero no hay plantillas.\n"
+                                 "Ejecuta: python template_capture.py")
         else:
-            self.status_var.set("❌ Error al recargar calibración")
+            self.status_var.set("❌ Error al recargar")
             messagebox.showerror("Error", 
-                               "No se pudo cargar la calibración.\n"
-                               "Ejecuta: python green_calibrator.py")
+                               "No se pudo recargar la configuración.\n"
+                               "Verifica los archivos de calibración.")
     
     def start_camera(self):
-        """Inicia la cámara seleccionada"""
+        """Inicia la cámara"""
+        # Verificar sistema
         if not self.card_detector.is_calibrated:
-            messagebox.showwarning("Advertencia", 
-                                 "⚠️  NO HAY CALIBRACIÓN\n\n"
-                                 "Ejecuta primero:\n"
-                                 "python green_calibrator.py")
+            messagebox.showwarning("Sin Calibración", 
+                                 "⚠️  NO HAY CALIBRACIÓN DEL TAPETE\n\n"
+                                 "Ejecuta: python green_calibrator.py")
+            return
+        
+        if not self.recognizer.corner_templates:
+            messagebox.showwarning("Sin Plantillas", 
+                                 "⚠️  NO HAY PLANTILLAS DE CARTAS\n\n"
+                                 "Ejecuta: python template_capture.py")
             return
         
         if not self.cam_combo['values']:
-            messagebox.showerror("Error", "Primero busca las cámaras disponibles")
+            messagebox.showerror("Error", "Busca las cámaras primero")
             return
         
         try:
             selected = self.cam_var.get()
             if not selected:
-                self.cam_combo.current(0)
-                selected = self.cam_combo.get()
+                messagebox.showerror("Error", "Selecciona una cámara")
+                return
             
-            # Extraer índice
-            cam_index = int(selected.split("Índice ")[1].split(")")[0])
+            # Extraer índice de la cámara
+            cam_index = None
+            for cam in self.camera_manager.available_cameras:
+                if cam['name'] in selected:
+                    cam_index = cam['index']
+                    break
+            
+            if cam_index is None:
+                messagebox.showerror("Error", "No se pudo determinar el índice de la cámara")
+                return
             
             # Configurar callback
             self.camera_manager.set_frame_callback(self.on_camera_frame)
@@ -292,11 +340,12 @@ class PokerCardApp:
                 self.status_var.set(f"✅ {message}")
                 self.start_btn.config(state="disabled")
                 self.stop_btn.config(state="normal")
+                print(f"\n✅ Sistema listo para detectar cartas")
             else:
                 messagebox.showerror("Error", message)
                 
         except Exception as e:
-            messagebox.showerror("Error", f"Error al iniciar cámara: {str(e)}")
+            messagebox.showerror("Error", f"Error al iniciar: {str(e)}")
     
     def stop_camera(self):
         """Detiene la cámara"""
@@ -304,7 +353,7 @@ class PokerCardApp:
         self.is_running = False
         self.cam_label.config(image='')
         self.cam_label.configure(
-            text="⏹️ Cámara detenida\n\nHaz clic en 'Iniciar Cámara'",
+            text="⏹️ Cámara detenida\n\nClick 'Iniciar' para continuar",
             background="black", 
             foreground="white"
         )
@@ -313,60 +362,39 @@ class PokerCardApp:
         self.stop_btn.config(state="disabled")
     
     def on_camera_frame(self, frame):
-        """Procesa frame de la cámara"""
+        """Callback cuando llega un nuevo frame"""
         self.current_frame = frame
         
-        # Procesar detección cada 1.5 segundos
+        # Procesar cada cierto intervalo
         current_time = time.time()
-        if (current_time - self.last_process_time >= 1.5):
+        if (current_time - self.last_process_time >= self.process_interval):
             self.last_process_time = current_time
             self.process_frame(frame)
     
     def process_frame(self, frame):
-        """Procesa frame para detectar cartas"""
+        """Procesa frame para detectar y reconocer cartas"""
         try:
-            # Detectar cartas
+            # Detectar cartas en el frame
             card_images, card_positions = self.card_detector.detect_cards(frame)
             
-            # Procesar cada carta
-            for card_img, position in zip(card_images, card_positions):
+            # Reconocer cada carta detectada
+            for card_img in card_images:
                 try:
-                    # Preprocesar
-                    processed_card = self.preprocess_card_image(card_img)
+                    # ✅ RECONOCER CON ROTACIONES (más robusto)
+                    card_name, confidence = self.recognizer.recognize_with_rotation(card_img)
                     
-                    # Reconocer
-                    number = self.number_recognizer.recognize(processed_card)
-                    suit_code = self.suit_recognizer.recognize(processed_card)
-                    suit_name = self.suit_recognizer.get_suit_name(suit_code)
-                    
-                    if number and suit_name:
-                        card_name = f"{number} de {suit_name}"
+                    # Solo agregar si la confianza es suficiente
+                    if card_name and confidence >= 0.6:
                         if card_name not in self.detected_cards:
-                            self.detected_cards.append(card_name)
-                            self.status_var.set(f"🎴 Detectada: {card_name}")
-                            print(f"🃏 Nueva carta: {card_name}")
+                            self.detected_cards.add(card_name)
+                            print(f"🎴 Nueva carta: {card_name} (conf: {confidence:.2%})")
                             
                 except Exception as e:
-                    print(f"Error procesando carta: {e}")
+                    print(f"Error reconociendo carta: {e}")
                     continue
                         
         except Exception as e:
             print(f"Error en process_frame: {e}")
-    
-    def preprocess_card_image(self, card_image):
-        """Preprocesa imagen de carta"""
-        try:
-            card_std = cv2.resize(card_image, (200, 300))
-            
-            lab = cv2.cvtColor(card_std, cv2.COLOR_BGR2LAB)
-            lab[:,:,0] = cv2.createCLAHE(clipLimit=3.0).apply(lab[:,:,0])
-            enhanced = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
-            
-            return enhanced
-            
-        except Exception as e:
-            print(f"Error en preprocesamiento: {e}")
-            return card_image
     
     def update_display(self):
         """Actualiza la pantalla"""
@@ -374,45 +402,75 @@ class PokerCardApp:
             if self.is_running and self.current_frame is not None:
                 display_frame = self.current_frame.copy()
                 
-                # Detectar y mostrar cartas
+                # Detectar cartas para visualización
                 card_images, card_positions = self.card_detector.detect_cards(self.current_frame)
                 
-                # Dibujar rectángulos
+                # Dibujar detecciones
                 for i, (x, y, w, h) in enumerate(card_positions):
-                    cv2.rectangle(display_frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
-                    cv2.putText(display_frame, f"Carta {i+1}", (x, y-10), 
-                               cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                    # Intentar reconocer para mostrar
+                    card_img = self.current_frame[y:y+h, x:x+w]
+                    card_name, confidence = self.recognizer.recognize_card(card_img)
+                    
+                    # Color según confianza
+                    if confidence >= 0.7:
+                        color = (0, 255, 0)  # Verde
+                    elif confidence >= 0.5:
+                        color = (0, 255, 255)  # Amarillo
+                    else:
+                        color = (0, 0, 255)  # Rojo
+                    
+                    # Dibujar rectángulo
+                    cv2.rectangle(display_frame, (x, y), (x+w, y+h), color, 3)
+                    
+                    # Mostrar nombre si se reconoció
+                    if card_name:
+                        cv2.putText(display_frame, card_name, (x, y-30), 
+                                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+                        cv2.putText(display_frame, f"{confidence:.1%}", (x, y-10), 
+                                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    else:
+                        cv2.putText(display_frame, f"? ({confidence:.1%})", (x, y-10), 
+                                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
                 
-                # Información
-                cv2.putText(display_frame, f"Cartas: {len(card_images)}", 
+                # Info general
+                cv2.putText(display_frame, f"Cartas visibles: {len(card_images)}", 
                            (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.putText(display_frame, f"Reconocidas: {len(self.detected_cards)}", 
+                           (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
                 
-                # Redimensionar
-                display_frame = cv2.resize(display_frame, (800, 600))
+                # Redimensionar para mostrar
+                h, w = display_frame.shape[:2]
+                display_w = 900
+                display_h = int(h * display_w / w)
+                display_frame = cv2.resize(display_frame, (display_w, display_h))
+                
+                # Convertir y mostrar
                 rgb_frame = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
-                
                 img = Image.fromarray(rgb_frame)
                 imgtk = ImageTk.PhotoImage(image=img)
                 
                 self.cam_label.imgtk = imgtk
                 self.cam_label.configure(image=imgtk)
             
-            # Actualizar lista
+            # Actualizar lista de cartas
             self.cards_list.delete(0, tk.END)
-            for card in self.detected_cards:
-                self.cards_list.insert(tk.END, card)
+            for i, card in enumerate(sorted(self.detected_cards), 1):
+                self.cards_list.insert(tk.END, f"{i:2d}. {card}")
+            
+            # Actualizar estadísticas
+            self.stats_var.set(f"Total: {len(self.detected_cards)} cartas")
             
             # Siguiente actualización
-            self.root.after(50, self.update_display)
+            self.root.after(30, self.update_display)
             
         except Exception as e:
             print(f"Error en display: {e}")
             self.root.after(100, self.update_display)
     
     def save_results(self):
-        """Guarda resultados"""
+        """Guarda resultados en archivo"""
         if not self.detected_cards:
-            messagebox.showinfo("Información", "No hay cartas detectadas")
+            messagebox.showinfo("Info", "No hay cartas para guardar")
             return
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -420,44 +478,70 @@ class PokerCardApp:
         
         try:
             with open(filename, 'w', encoding='utf-8') as f:
-                f.write("🃏 CARTAS DETECTADAS\n")
-                f.write("=" * 40 + "\n")
+                f.write("=" * 50 + "\n")
+                f.write("🃏 CARTAS DE POKER DETECTADAS\n")
+                f.write("=" * 50 + "\n")
                 f.write(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                f.write(f"Total: {len(self.detected_cards)}\n\n")
+                f.write(f"Total: {len(self.detected_cards)} cartas\n")
+                f.write("=" * 50 + "\n\n")
                 
-                for i, card in enumerate(self.detected_cards, 1):
-                    f.write(f"{i}. {card}\n")
+                for i, card in enumerate(sorted(self.detected_cards), 1):
+                    f.write(f"{i:2d}. {card}\n")
+                
+                f.write("\n" + "=" * 50 + "\n")
             
-            messagebox.showinfo("Éxito", f"Guardado en:\n{filename}")
+            messagebox.showinfo("Guardado", f"✅ Archivo guardado:\n{filename}")
+            print(f"💾 Resultados guardados en: {filename}")
             
         except Exception as e:
             messagebox.showerror("Error", f"Error al guardar: {e}")
     
     def clear_detections(self):
-        """Limpia detecciones"""
-        self.detected_cards = []
+        """Limpia lista de detecciones"""
+        self.detected_cards.clear()
         self.cards_list.delete(0, tk.END)
+        self.stats_var.set("Total: 0 cartas")
         self.status_var.set("🧹 Detecciones limpiadas")
+        print("🧹 Lista de cartas limpiada")
     
     def on_closing(self):
-        """Cierre limpio"""
+        """Cierre limpio de la aplicación"""
+        print("Cerrando aplicación...")
         self.camera_manager.stop_camera()
         self.root.destroy()
 
 
 def main():
-    # Suprimir warnings
+    # Configuración
     os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'
     
-    print("=" * 60)
+    print("=" * 70)
     print("🃏 DETECTOR DE CARTAS POKER")
-    print("=" * 60)
-    print("\n⚠️  IMPORTANTE:")
-    print("Si es la primera vez, ejecuta primero:")
-    print("   python green_calibrator.py")
-    print("\nPara calibrar el tapete verde.")
-    print("=" * 60)
+    print("   Reconocimiento por Template Matching (Esquinas)")
+    print("=" * 70)
+    print("\n📋 REQUISITOS:")
+    print("✓ Calibración del tapete verde (green_calibration.json)")
+    print("✓ Plantillas de cartas (templates_config.json)")
+    print("\n💡 Si faltan archivos, ejecuta:")
+    print("   1. python green_calibrator.py")
+    print("   2. python template_capture.py")
+    print("=" * 70 + "\n")
     
+    # Verificar archivos necesarios
+    missing_files = []
+    if not os.path.exists("green_calibration.json"):
+        missing_files.append("green_calibration.json")
+    if not os.path.exists("templates_config.json"):
+        missing_files.append("templates_config.json")
+    
+    if missing_files:
+        print("⚠️  ADVERTENCIA: Faltan archivos:")
+        for f in missing_files:
+            print(f"   ❌ {f}")
+        print("\nLa aplicación puede no funcionar correctamente.")
+        input("\nPresiona ENTER para continuar de todos modos...")
+    
+    # Iniciar aplicación
     root = tk.Tk()
     app = PokerCardApp(root)
     root.mainloop()
