@@ -10,7 +10,7 @@ from datetime import datetime
 
 # Importar módulos correctos
 from camera_manager import IVCamManager
-from number_recognizer import NumberRecognizer
+from fixed_template_matcher import FixedTemplateRecognizer
 from suit_recognizer import SuitRecognizer
 
 class CardDetectorWithCalibration:
@@ -123,7 +123,7 @@ class PokerCardApp:
         # Inicializar componentes CORRECTOS
         self.camera_manager = IVCamManager()
         self.card_detector = CardDetectorWithCalibration()  # ✅ DETECTOR CORRECTO
-        self.number_recognizer = NumberRecognizer()
+        self.recognizer = FixedTemplateRecognizer()
         self.suit_recognizer = SuitRecognizer()
         
         # Estado
